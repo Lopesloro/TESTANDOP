@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+
+{% block titulo %}Acurácia — {{ empresa.nome }} — {{ projeto.nome }}{% endblock %}
+
+{% block conteudo %}
+{{ m.aviso_demo() }}
+<section class="pagina">
+  <div class="container">
+    <div class="pagina__cabeca">
+      <div>
+        {{ m.cabeca("Acurácia", "Quanto a previsão errou, medido contra o que aconteceu. Toda previsão aparece ao lado da régua — repetir o último valor conhecido —, que é o mínimo que um modelo precisa superar para merecer confiança.") }}
+      </div>
+      {{ m.seletor_empresa(empresas, empresa.id, "/acuracia") }}
+    </div>
+
+    <h2 class="subtitulo">Erro da previsão para 7 dias</h2>
+    <div class="tabela-rolagem">
+      <table class="tabela tabela--dados">
+        <caption class="visualmente-oculto">Erro da régua e do modelo por campanha, últimos 21 dias fechados</caption>
+        <thead>
+          <tr>
+            <th scope="col">Campanha</th>
+            <th scope="col">Métrica</th>
+            <th scope="col" class="num">Erro da régua (sMAPE)</th>
+            <th scope="col" class="num">Cobertura da faixa de 80%</th>
+            <th scope="col">Modelo por quantis</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in empresa.campanhas %}
+          <tr>
+            <td><a class="link" href="/acuracia?empresa={{ empresa.id }}&amp;campanha={{ c.id }}"{% if c.id == escolhida.id %} aria-current="true"{% endif %}>{{ c.nome }}</a></td>
+            <td>{{ c.metrica }}</td>
+            <td class="num">{{ medidas[c.id].smape | pct(1, false) }}</td>
+            <td class="num">{{ medidas[c.id].cobertura | pct(0, false) }}</td>
+            <td class="a-fazer">Entra na Sprint 2</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p class="nota">sMAPE: erro percentual simétrico médio, nos últimos 21 dias fechados. Cobertura: em quantos desses dias o valor real caiu dentro da faixa de 80%; o ideal é ficar perto de 80%.</p>
+
+    <h2 class="subtitulo subtitulo--espaco">{{ escolhida.nome }}</h2>
+    <figure class="grafico">
+      <div class="grafico__area">{{ grafico }}</div>
+      <figcaption>Cada ponto compara o {{ escolhida.metrica }} que a régua previa 7 dias antes com o {{ escolhida.metrica }} que aconteceu. Onde as linhas se afastam, a campanha mudou de comportamento.</figcaption>
+    </figure>
+
+    <h2 class="subtitulo subtitulo--espaco">Alertas julgados</h2>
+    <dl class="resumo resumo--linha">
+      <div><dt>Confirmados</dt><dd>{{ feedback.confirmados }}</dd></div>
+      <div><dt>Descartados</dt><dd>{{ feedback.descartados }}</dd></div>
+      <div><dt>Ainda abertos</dt><dd>{{ feedback.abertos }}</dd></div>
+      <div>
+        <dt>Precisão do alerta</dt>
+        <dd>{% if feedback.precisao is none %}<span class="a-fazer">Sem julgamento ainda</span>{% else %}{{ feedback.precisao | pct(0, false) }}{% endif %}</dd>
+      </div>
+    </dl>
+    <p class="nota">Precisão = confirmados ÷ julgados. Cada alerta descartado vira exemplo de falso alarme para recalibrar o limiar (Sprint 3).</p>
+  </div>
+</section>
+{% endblock %}

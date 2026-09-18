@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+
+{% block titulo %}Painel — {{ empresa.nome }} — {{ projeto.nome }}{% endblock %}
+
+{% block conteudo %}
+{{ m.aviso_demo() }}
+<section class="pagina">
+  <div class="container">
+    <div class="pagina__cabeca">
+      <div>
+        {{ m.cabeca("Painel", empresa.nome ~ ", " ~ empresa.segmento ~ ". Última semana fechada: " ~ (inicio | data_longa) ~ " a " ~ (fim | data_longa) ~ ".") }}
+      </div>
+      {{ m.seletor_empresa(empresas, empresa.id, "/painel") }}
+    </div>
+
+    <div class="blocos">
+      <div class="bloco">
+        <p class="bloco__rotulo">Gasto na última semana fechada</p>
+        <p class="bloco__valor">{{ resumo.gasto | brl(0) }}</p>
+        <p class="bloco__detalhe">{{ resumo.variacao_gasto | pct }} contra a média das duas semanas anteriores</p>
+      </div>
+      <div class="bloco">
+        <p class="bloco__rotulo">{{ empresa.metrica }} da semana</p>
+        <p class="bloco__valor">{{ resumo.valor_atual | metrica(empresa.metrica) }}</p>
+        <p class="bloco__detalhe">{{ m.estado(resumo.gravidade) }} {{ resumo.variacao | pct }} contra as duas semanas anteriores</p>
+      </div>
+      <div class="bloco">
+        <p class="bloco__rotulo">{{ empresa.metrica }} previsto para os próximos 7 dias</p>
+        <p class="bloco__valor">{{ resumo.previsto_7 | metrica(empresa.metrica) }}</p>
+        <p class="bloco__detalhe">Mediana (P50). A faixa de cada campanha está na tabela.</p>
+      </div>
+      <div class="bloco">
+        <p class="bloco__rotulo">Verba em risco nos próximos 7 dias</p>
+        <p class="bloco__valor">{{ resumo.verba_em_risco | brl(0) }}</p>
+        <p class="bloco__detalhe"><a class="link" href="/alertas?empresa={{ empresa.id }}">{{ resumo.alertas_abertos }} {{ "alerta aberto" if resumo.alertas_abertos == 1 else "alertas abertos" }}</a></p>
+      </div>
+    </div>
+
+    <h2 class="subtitulo">Campanhas</h2>
+    <div class="tabela-rolagem">
+      <table class="tabela tabela--dados">
+        <caption class="visualmente-oculto">Campanhas de {{ empresa.nome }} com {{ empresa.metrica }} atual, previsto e faixa de incerteza</caption>
+        <thead>
+          <tr>
+            <th scope="col">Campanha</th>
+            <th scope="col">Estado</th>
+            <th scope="col" class="num">Gasto 7 dias</th>
+            <th scope="col" class="num">{{ empresa.metrica }} 7 dias</th>
+            <th scope="col" class="num">Previsto 7 dias</th>
+            <th scope="col">Tendência 28 dias</th>
+            <th scope="col"><span class="visualmente-oculto">Ações</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for c in empresa.campanhas %}
+          {% set p = c.previsao_em(7) %}
+          <tr>
+            <td><strong>{{ c.nome }}</strong><span class="celula__sub">{{ c.objetivo }}</span></td>
+            <td>{{ m.estado(c.gravidade) }}</td>
+            <td class="num">{{ c.atual.gasto | brl(0) }}</td>
+            <td class="num">{{ c.valor_atual | metrica(c.metrica) }}</td>
+            <td class="num">
+              <strong>{{ p.p50 | metrica(c.metrica) }}</strong>
+              <span class="celula__sub">faixa {{ p.p10 | metrica(c.metrica) }} a {{ p.p90 | metrica(c.metrica) }}</span>
+            </td>
+            <td>{{ tendencias[c.id] }}</td>
+            <td class="acoes-celula">
+              <a class="link" href="/previsao/{{ c.id }}">Previsão</a>
+              <a class="link" href="/diagnostico/{{ c.id }}">Diagnóstico</a>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}

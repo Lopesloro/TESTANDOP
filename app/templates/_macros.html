@@ -1,0 +1,36 @@
+{% macro aviso_demo() %}
+<div class="aviso-demo" role="note">
+  <div class="container">Dados de demonstração: empresas e números fictícios, gerados no servidor. A previsão é provisória até o modelo da Sprint 2.</div>
+</div>
+{% endmacro %}
+
+{% macro cabeca(titulo, lead) %}
+<h1 class="titulo titulo--pagina">{{ titulo }}</h1>
+<span class="regua" aria-hidden="true"></span>
+{% if lead %}<p class="lead">{{ lead }}</p>{% endif %}
+{% endmacro %}
+
+{% macro seletor_empresa(empresas, atual_id, rota, com_todas=false) %}
+<nav class="seletor" aria-label="Empresa">
+  {% if com_todas %}
+  <a href="{{ rota }}"{% if atual_id is none %} aria-current="true"{% endif %}>Todas</a>
+  {% endif %}
+  {% for e in empresas %}
+  <a href="{{ rota }}?empresa={{ e.id }}"{% if e.id == atual_id %} aria-current="true"{% endif %}>{{ e.nome }}</a>
+  {% endfor %}
+</nav>
+{% endmacro %}
+
+{% macro estado(gravidade) %}
+{% if gravidade == "critico" %}<span class="estado estado--critico">Anomalia</span>
+{% elif gravidade == "atencao" %}<span class="estado estado--atencao">Atenção</span>
+{% else %}<span class="estado estado--ok">Normal</span>{% endif %}
+{% endmacro %}
+
+{% macro campanhas_links(campanhas, atual_id, rota, sufixo="") %}
+<ul class="lista-links" aria-label="Campanhas">
+  {% for c in campanhas %}
+  <li><a href="{{ rota }}/{{ c.id }}{{ sufixo }}"{% if c.id == atual_id %} aria-current="page"{% endif %}>{{ c.nome }}</a></li>
+  {% endfor %}
+</ul>
+{% endmacro %}
