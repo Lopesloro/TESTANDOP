@@ -10,6 +10,7 @@ Disciplina 12563. Orientadora: Profa. Sílvia C. de Matos Soares.
 
 - Gabriel Lopes Londe Rodrigues
 - Nicolas Marques Linares
+- Matheus Rocafa Moraes
 
 ## A ideia
 

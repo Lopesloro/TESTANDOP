@@ -15,7 +15,9 @@ def test_tela_do_projeto_mostra_os_integrantes():
     html = cliente.get("/").text
     assert "Gabriel Lopes Londe Rodrigues" in html
     assert "Nicolas Marques Linares" in html
+    assert "Matheus Rocafa Moraes" in html
     assert "Sílvia C. de Matos Soares" in html
+    assert "Nicolas Marques Linares e Matheus Rocafa Moraes." in html
 
 
 def test_tela_do_projeto_mostra_a_ideia():

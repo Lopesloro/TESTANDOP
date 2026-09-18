@@ -62,7 +62,7 @@
       </div>
     </div>
     <div class="container rodape__base">
-      <p>Integrantes: {{ integrantes | join(" e ") }}.</p>
+      <p>Integrantes: {{ integrantes[:-1] | join(", ") }} e {{ integrantes[-1] }}.</p>
     </div>
   </footer>
 
