@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block titulo %}{{ projeto.nome }} — {{ projeto.disciplina }}{% endblock %}
+{% block topo_classe %}topo--sobre-hero{% endblock %}
+
+{% block conteudo %}
+<section class="hero" aria-labelledby="hero-titulo">
+  <svg class="hero__grafico" viewBox="0 0 1440 400" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <polygon points="900,240 1440,130 1440,350" fill="#fff" fill-opacity=".10"/>
+    <path d="M0,300 C120,280 180,322 280,292 S460,250 560,272 S760,226 900,240" fill="none" stroke="#fff" stroke-width="2" vector-effect="non-scaling-stroke"/>
+    <path d="M900,240 L1440,238" fill="none" stroke="#fff" stroke-width="2" vector-effect="non-scaling-stroke"/>
+    <line x1="900" y1="60" x2="900" y2="400" stroke="#fff" stroke-width="1" vector-effect="non-scaling-stroke"/>
+  </svg>
+  <div class="container hero__conteudo">
+    <h1 id="hero-titulo" class="hero__titulo">Prever o custo antes que a verba queime</h1>
+    <p class="hero__sub">Previsão de custo por lead e de retorno das campanhas Meta Ads para os próximos 7 a 14 dias, com alerta de anomalia.</p>
+    <p class="hero__atrib">{{ projeto.disciplina }}, {{ projeto.curso }}, {{ projeto.instituicao }}, {{ projeto.semestre }}</p>
+    <p class="hero__acao"><a class="botao botao--vazado-claro" href="{{ chamada.href }}">{{ chamada.rotulo }}</a></p>
+  </div>
+  <span class="chevron" aria-hidden="true"></span>
+</section>
+
+<section class="secao" id="projeto" data-revelar>
+  <div class="container dividida">
+    <div>
+      <p class="eyebrow">O projeto</p>
+      <h2 class="titulo">Um alarme para a verba de anúncio</h2>
+      <span class="regua" aria-hidden="true"></span>
+      <div class="prosa">
+        {% for paragrafo in ideia %}
+        <p>{{ paragrafo }}</p>
+        {% endfor %}
+      </div>
+    </div>
+    <div class="circulo" aria-label="Círculo Dourado">
+      {% for rotulo, texto in circulo %}
+      <div class="circulo__item">
+        <h3 class="circulo__rotulo">{{ rotulo }}</h3>
+        <p class="circulo__texto">{{ texto }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+
+<section class="secao secao--alt" id="quem-faz" data-revelar>
+  <div class="container">
+    <p class="eyebrow">Quem faz</p>
+    <h2 class="titulo">Integrantes do time</h2>
+    <span class="regua" aria-hidden="true"></span>
+    <ul class="pessoas">
+      {% for nome in integrantes %}
+      <li>
+        <span class="pessoas__nome">{{ nome }}</span>
+        <span class="pessoas__papel">Integrante, {{ projeto.curso }}</span>
+      </li>
+      {% endfor %}
+      <li>
+        <span class="pessoas__nome">{{ projeto.orientadora }}</span>
+        <span class="pessoas__papel">Orientadora</span>
+      </li>
+    </ul>
+  </div>
+</section>
+
+<section class="secao" id="extensao" data-revelar>
+  <div class="container">
+    <p class="eyebrow">Extensão</p>
+    <h2 class="titulo">Feito com quem anuncia de verdade</h2>
+    <span class="regua" aria-hidden="true"></span>
+    <div class="prosa">
+      <p>São 62 horas de extensão por aluno, junto a 2 a 5 empresas parceiras — clientes da BlueShieldPro, com CNPJ. Elas participam da definição do problema, das entrevistas, da validação do protótipo e do aceite final, e autorizam por escrito o uso dos dados das próprias campanhas.</p>
+      <p class="nota">Empresas parceiras: a confirmar na Sprint 1.</p>
+    </div>
+    <table class="tabela tabela--empilha">
+      <caption class="visualmente-oculto">Atividades de extensão com a comunidade externa</caption>
+      <thead>
+        <tr>
+          <th scope="col">Atividade</th>
+          <th scope="col">Com quem</th>
+          <th scope="col">Entrega</th>
+          <th scope="col">Quando</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in extensao %}
+        <tr>
+          <td data-rotulo="Atividade">{{ item.atividade }}</td>
+          <td data-rotulo="Com quem">{{ item.com_quem }}</td>
+          <td data-rotulo="Entrega">{{ item.entrega }}</td>
+          <td data-rotulo="Quando">{{ item.quando }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="secao secao--alt" id="tecnologias" data-revelar>
+  <div class="container">
+    <p class="eyebrow">Tecnologias</p>
+    <h2 class="titulo">Com o que o sistema é feito</h2>
+    <span class="regua" aria-hidden="true"></span>
+    <dl class="lista-def">
+      {% for area, descricao in tecnologias %}
+      <dt>{{ area }}</dt>
+      <dd>{{ descricao }}</dd>
+      {% endfor %}
+    </dl>
+  </div>
+</section>
+
+<section class="secao" id="andamento" data-revelar>
+  <div class="container">
+    <p class="eyebrow">Andamento</p>
+    <h2 class="titulo">Cada item entra por pull request</h2>
+    <span class="regua" aria-hidden="true"></span>
+    <div class="prosa">
+      <p>O checklist do projeto está aberto como issues no GitHub. Cada item chega em um pull request que roda os testes automaticamente e só entra na versão principal depois de aprovado e testado pelos integrantes.</p>
+    </div>
+    <ol class="sprints">
+      {% for sprint, tema, datas, estado in sprints %}
+      <li>
+        <span class="sprints__nome">{{ sprint }}</span>
+        <span class="sprints__tema">{{ tema }}</span>
+        <span class="sprints__datas">{{ datas }}</span>
+        <span class="estado estado--{{ estado }}">{{ rotulo_estado[estado] }}</span>
+      </li>
+      {% endfor %}
+    </ol>
+    <p class="andamento__link"><a class="link" href="{{ projeto.repositorio }}/issues">Ver o checklist e os pull requests no GitHub</a></p>
+  </div>
+</section>
+{% endblock %}

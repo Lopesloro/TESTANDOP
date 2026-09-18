@@ -10,6 +10,7 @@ Disciplina 12563. Orientadora: Profa. Sílvia C. de Matos Soares.
 
 - Gabriel Lopes Londe Rodrigues
 - Nicolas Marques Linares
+- Matheus Rocafa Moraes
 
 ## A ideia
 
@@ -37,15 +38,35 @@ Cada item do checklist em [`docs/PLANO.md`](docs/PLANO.md) está aberto como iss
 entra no projeto por **pull request**. Todo PR roda os testes no GitHub Actions e
 só vai para a `main` depois de aprovado e testado pelos integrantes.
 
-## Rodar localmente
+## Como abrir
+
+### No navegador, sem instalar nada
+
+**https://radar-de-campanha.onrender.com**
+
+Telas: `/` (projeto), `/painel`, `/previsao`, `/alertas`, `/diagnostico` e `/acuracia`.
+O plano gratuito do Render adormece o serviço depois de 15 minutos sem acesso; a
+primeira visita depois disso leva cerca de 50 segundos para abrir.
+
+Enquanto os pull requests das telas não entram na `main`, o site publicado segue a
+branch `feat/telas-do-produto` e se atualiza sozinho a cada push nela.
+
+### No computador
+
+Precisa de Python 3.11 ou mais novo e do Git.
 
 ```bash
+git clone https://github.com/Lopesloro/TESTANDOP.git
+cd TESTANDOP
+git checkout feat/telas-do-produto
 python3 -m venv .venv
 .venv/bin/pip install -r requirements.txt
 .venv/bin/uvicorn app.web:app --reload --port 8765
 ```
 
-Abrir `http://localhost:8765`.
+No Windows, troque `.venv/bin/` por `.venv\Scripts\` e `python3` por `python`.
+
+Abrir `http://localhost:8765`. Para rodar os testes:
 
 ```bash
 .venv/bin/pytest -ra
