@@ -1,0 +1,76 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+
+{% block titulo %}Previsão — {{ campanha.nome }} — {{ projeto.nome }}{% endblock %}
+
+{% block conteudo %}
+{{ m.aviso_demo() }}
+<section class="pagina">
+  <div class="container">
+    <div class="pagina__cabeca">
+      <div>
+        {{ m.cabeca("Previsão", campanha.nome ~ ". " ~ empresa.nome ~ ", objetivo " ~ campanha.objetivo | lower ~ ". Métrica: " ~ ("custo por lead (CPA)" if campanha.metrica == "CPA" else "retorno sobre o gasto (ROAS)") ~ ".") }}
+      </div>
+      <nav class="seletor" aria-label="Horizonte">
+        {% for h in horizontes %}
+        <a href="/previsao/{{ campanha.id }}?horizonte={{ h }}"{% if h == horizonte %} aria-current="true"{% endif %}>{{ h }} dias</a>
+        {% endfor %}
+      </nav>
+    </div>
+
+    {{ m.campanhas_links(empresa.campanhas, campanha.id, "/previsao", "?horizonte=" ~ horizonte) }}
+
+    <div class="dividida dividida--painel">
+      <figure class="grafico">
+        <div class="grafico__area">{{ grafico }}</div>
+        <figcaption>Linha azul: {{ campanha.metrica }} na janela móvel de 7 dias. Tracejado: mediana prevista. Faixa azul: 80% de chance de o valor cair ali dentro. A área cinza marca os últimos {{ dias_provisorios }} dias, que a janela de atribuição da Meta ainda está revisando — as conversões deles ainda vão chegar, então o trecho cinza aparece no gráfico, mas a previsão parte do último dia fechado.</figcaption>
+      </figure>
+
+      <dl class="resumo">
+        <div>
+          <dt>{{ campanha.metrica }} previsto em {{ horizonte }} dias (P50)</dt>
+          <dd>{{ ponto.p50 | metrica(campanha.metrica) }}</dd>
+        </div>
+        <div>
+          <dt>Faixa de 80%</dt>
+          <dd>{{ ponto.p10 | metrica(campanha.metrica) }} a {{ ponto.p90 | metrica(campanha.metrica) }}</dd>
+        </div>
+        <div>
+          <dt>Gasto projetado em {{ horizonte }} dias</dt>
+          <dd>{{ gasto_projetado | brl(0) }}<small>No ritmo da última semana fechada</small></dd>
+        </div>
+        <div>
+          <dt>{{ esperado.rotulo }}</dt>
+          <dd>{{ esperado.minimo }} a {{ esperado.maximo }}</dd>
+        </div>
+      </dl>
+    </div>
+
+    <h2 class="subtitulo">Previsão dia a dia</h2>
+    <div class="tabela-rolagem">
+      <table class="tabela tabela--dados">
+        <caption class="visualmente-oculto">Previsão diária de {{ campanha.metrica }} com a faixa de 80%</caption>
+        <thead>
+          <tr>
+            <th scope="col">Dia</th>
+            <th scope="col" class="num">P10</th>
+            <th scope="col" class="num">P50</th>
+            <th scope="col" class="num">P90</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for p in previsao %}
+          <tr>
+            <td>{{ p.data | data_curta }}</td>
+            <td class="num">{{ p.p10 | metrica(campanha.metrica) }}</td>
+            <td class="num">{{ p.p50 | metrica(campanha.metrica) }}</td>
+            <td class="num">{{ p.p90 | metrica(campanha.metrica) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <p class="nota">Previsão provisória: repete o último valor fechado com uma faixa que se abre com o tempo. O modelo por quantis substitui esta régua na Sprint 2.</p>
+  </div>
+</section>
+{% endblock %}

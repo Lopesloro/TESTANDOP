@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+
+{% block titulo %}Alertas — {{ projeto.nome }}{% endblock %}
+
+{% block conteudo %}
+{{ m.aviso_demo() }}
+<section class="pagina">
+  <div class="container">
+    <div class="pagina__cabeca">
+      <div>
+        {{ m.cabeca("Alertas", "Campanhas que saíram do esperado na última semana fechada, da maior verba em risco para a menor. Confirmar ou descartar ensina o sistema a calibrar o próximo alerta.") }}
+      </div>
+      {{ m.seletor_empresa(empresas, filtro, "/alertas", com_todas=true) }}
+    </div>
+
+    {% if alertas %}
+    <div class="alertas">
+      {% for a in alertas %}
+      <article class="alerta" id="alerta-{{ a.id }}" aria-labelledby="titulo-{{ a.id }}">
+        <div class="alerta__topo">
+          {{ m.estado(a.gravidade) }}
+          <span>{{ a.empresa_nome }}</span>
+        </div>
+        <h2 class="alerta__titulo" id="titulo-{{ a.id }}">{{ a.campanha_nome }}</h2>
+        <dl class="alerta__numeros">
+          <div>
+            <dt>{{ a.metrica }} na semana</dt>
+            <dd>{{ a.variacao | pct }}</dd>
+          </div>
+          <div>
+            <dt>Causa provável</dt>
+            <dd>{{ a.causa }}</dd>
+          </div>
+          <div>
+            <dt>Verba em risco em 7 dias</dt>
+            <dd>{{ a.verba_em_risco | brl(0) }}</dd>
+          </div>
+          <div>
+            <dt>Detectado em</dt>
+            <dd>{{ a.detectado_em | data_longa }}</dd>
+          </div>
+        </dl>
+        <p class="alerta__texto">{{ a.explicacao }}</p>
+        <p class="nota">Redação provisória montada por regra. A explicação pelo modelo de linguagem entra na Sprint 3.</p>
+
+        {% if a.estado == "aberto" %}
+        <form class="alerta__acoes" method="post" action="/alertas/{{ a.id }}">
+          <input type="hidden" name="empresa" value="{{ filtro or '' }}">
+          <button class="botao botao--solido" type="submit" name="acao" value="confirmar">Confirmar alerta</button>
+          <button class="botao botao--vazado" type="submit" name="acao" value="descartar">Descartar</button>
+          <a class="link" href="/diagnostico/{{ a.campanha_id }}">Ver o diagnóstico</a>
+        </form>
+        {% else %}
+        <form class="alerta__feito" method="post" action="/alertas/{{ a.id }}">
+          <input type="hidden" name="empresa" value="{{ filtro or '' }}">
+          <span class="estado {{ 'estado--ok' if a.estado == 'confirmado' else '' }}">{{ "Confirmado" if a.estado == "confirmado" else "Descartado" }} nesta demonstração</span>
+          <button class="botao-texto" type="submit" name="acao" value="reabrir">Reabrir</button>
+        </form>
+        {% endif %}
+      </article>
+      {% endfor %}
+    </div>
+    {% else %}
+    <p class="vazio">Nenhuma campanha desta empresa saiu do esperado na última semana fechada.</p>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}
