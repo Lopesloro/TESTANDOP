@@ -14,6 +14,7 @@ PROJETO = {
 INTEGRANTES = [
     "Gabriel Lopes Londe Rodrigues",
     "Nicolas Marques Linares",
+    "Matheus Rocafa Moraes",
 ]
 
 IDEIA = [
