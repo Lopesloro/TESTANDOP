@@ -67,7 +67,7 @@ riscos têm contramedida no plano, e ambos viram parágrafo bom no relatório.
 
 Repositório: [Lopesloro/TESTANDOP](https://github.com/Lopesloro/TESTANDOP)
 Título de trabalho: **Radar de Campanha** (confirmar com o time).
-Integrantes: Gabriel Lopes Londe Rodrigues e Nicolas Marques Linares.
+Integrantes: Gabriel Lopes Londe Rodrigues, Nicolas Marques Linares e Matheus Rocafa Moraes.
 
 **Fluxo de trabalho:** cada bloco deste checklist está aberto como issue no
 GitHub e entra por pull request. O CI roda os testes em todo PR; nada vai para a
