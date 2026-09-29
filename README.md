@@ -42,7 +42,7 @@ só vai para a `main` depois de aprovado e testado pelos integrantes.
 
 ### No navegador, sem instalar nada
 
-**https://radar-de-campanha.onrender.com**
+**https://radar-de-campanha-ld8f.onrender.com**
 
 Telas: `/` (projeto), `/painel`, `/previsao`, `/alertas`, `/diagnostico` e `/acuracia`.
 O plano gratuito do Render adormece o serviço depois de 15 minutos sem acesso; a
