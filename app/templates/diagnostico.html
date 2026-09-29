@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% import "_macros.html" as m %}
+
+{% block titulo %}Diagnóstico — {{ campanha.nome }} — {{ projeto.nome }}{% endblock %}
+
+{% block conteudo %}
+{{ m.aviso_demo() }}
+<section class="pagina">
+  <div class="container">
+    <div class="pagina__cabeca">
+      <div>
+        {{ m.cabeca("Diagnóstico", campanha.nome ~ ". " ~ frase) }}
+      </div>
+      {{ m.estado(campanha.gravidade) }}
+    </div>
+
+    {{ m.campanhas_links(empresa.campanhas, campanha.id, "/diagnostico") }}
+
+    <p class="formula">CPA = CPM ÷ (1.000 × CTR × taxa de conversão). Cada fator empurra o custo por resultado para cima ou para baixo, e o gráfico mostra quanto cada um empurrou.</p>
+
+    <figure class="grafico">
+      <div class="grafico__area">{{ grafico }}</div>
+      <figcaption>Comparação entre as duas semanas anteriores e a última semana fechada ({{ inicio | data_longa }} a {{ fim | data_longa }}). Os efeitos se multiplicam: a soma das barras não é igual à variação total.</figcaption>
+    </figure>
+
+    <div class="tabela-rolagem">
+      <table class="tabela tabela--dados">
+        <caption class="visualmente-oculto">Métricas antes e depois, com a variação e o efeito no CPA</caption>
+        <thead>
+          <tr>
+            <th scope="col">Métrica</th>
+            <th scope="col" class="num">Duas semanas anteriores</th>
+            <th scope="col" class="num">Última semana</th>
+            <th scope="col" class="num">Variação</th>
+            <th scope="col" class="num">Efeito no CPA</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for rotulo, antes, depois, variacao, efeito in linhas %}
+          <tr>
+            <td>{{ rotulo }}</td>
+            <td class="num">{{ antes }}</td>
+            <td class="num">{{ depois }}</td>
+            <td class="num">{{ variacao }}</td>
+            <td class="num">{{ efeito }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+{% endblock %}
